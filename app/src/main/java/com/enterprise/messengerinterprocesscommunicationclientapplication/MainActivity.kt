@@ -34,11 +34,6 @@ import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
 
-    companion object{
-
-        val textToDisplay = mutableStateOf("")
-
-    }
 
     //Launching New Activity from Service works up to (including) Android 10
     //Android Messenger Inter Process Communication is tested up to (including) Android 15 and works
@@ -60,7 +55,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             MessengerInterProcessCommunicationClientApplicationTheme {
 
-                AppMessengerClient(textToDisplay = textToDisplay)
+                AppMessengerClient()
 
             }
         }
@@ -72,20 +67,24 @@ class MainActivity : ComponentActivity() {
 
 
 @Composable
-fun AppMessengerClient(textToDisplay: MutableState<String>) {
-    Scaffold(modifier = Modifier.fillMaxSize().systemBarsPadding()) { innerPadding ->
-        Column(modifier = Modifier.fillMaxSize().padding(innerPadding),
+fun AppMessengerClient() {
+    Scaffold(modifier = Modifier
+        .fillMaxSize()
+        .systemBarsPadding()) { innerPadding ->
+        Column(modifier = Modifier
+            .fillMaxSize()
+            .padding(innerPadding),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center){
 
-            MainBody(textToDisplay = textToDisplay)
+            MainBody()
 
         }
     }
 }
 
 @Composable
-fun MainBody(textToDisplay: MutableState<String>) {
+fun MainBody() {
 
     var inputValue = rememberSaveable(stateSaver = TextFieldValue.Saver) {
         mutableStateOf(TextFieldValue(""))
@@ -93,6 +92,7 @@ fun MainBody(textToDisplay: MutableState<String>) {
 
     val context = LocalContext.current
 
+    val textToDisplay = rememberSaveable {mutableStateOf("")}
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -126,7 +126,13 @@ fun MainBody(textToDisplay: MutableState<String>) {
                 val messengerClient = MessengerClient(context = context,
                     packageOfServerApplication = AppConstants.packageOfServerApplication,
                     packageAndClassOfServiceOfServerApplication = AppConstants.packageAndClassOfServiceOfServerApplication,
-                    onReplyFromServer = ::onReplyFromServerApplication)
+                    onReplyFromServer = { inputContext, message ->
+
+                        textToDisplay.value = context.getString(R.string.main_activity_received) +
+                                context.getString(R.string.main_activity_space) +
+                                message.toString()
+
+                    })
 
                 messengerClient.sendMessageToServer(inputValue.value.text.toString())
 
@@ -140,17 +146,3 @@ fun MainBody(textToDisplay: MutableState<String>) {
     }
 }
 
-fun onReplyFromServerApplication(context: Context, message: String?){
-
-    GlobalScope.launch(Dispatchers.Main){
-
-        MainActivity.textToDisplay.value = context.getString(R.string.main_activity_received) +
-                context.getString(R.string.main_activity_space) +
-                message.toString()
-
-    }
-
-
-
-
-}
