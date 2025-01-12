@@ -1,3 +1,13 @@
 <resources>
-    <string name="app_name">MessengerInterProcessCommunicationClientApplication</string>
+    <string name="app_name">Messenger Client</string>
+
+    <string name="main_activity_inter_process_communication">Inter Process Communication</string>
+    <string name="main_activity_messenger_client">Messenger Client</string>
+
+    <string name="main_activity_value_to_send">Value to Send</string>
+    <string name="main_activity_send">Send</string>
+
+    <string name="main_activity_received">"Received:"</string>
+    <string name="main_activity_space">" "</string>
+
 </resources>
