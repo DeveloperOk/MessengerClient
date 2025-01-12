@@ -40,7 +40,7 @@ class MainActivity : ComponentActivity() {
 
     }
 
-    //Launching New Activity from Service works up to (including) Android 13
+    //Launching New Activity from Service works up to (including) Android 10
     //Android Messenger Inter Process Communication is tested up to (including) Android 15 and works
     //up to (including) Android 15
     //Android Messenger Inter Process Communication
